@@ -2,6 +2,12 @@ package es.ceu.gisi.modcomp.cyk_algorithm.algorithm;
 
 import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.exceptions.CYKAlgorithmException;
 import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.interfaces.CYKAlgorithmInterface;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+
+
 
 /**
  * Esta clase contiene la implementación de la interfaz CYKAlgorithmInterface
@@ -11,6 +17,20 @@ import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.interfaces.CYKAlgorithmInterf
  * @author Sergio Saugar García <sergio.saugargarcia@ceu.es>
  */
 public class CYKAlgorithm implements CYKAlgorithmInterface {
+	private List<Character> nonTerminals;
+    	private List<Character> terminals;
+    	private Map<Character, List<String>> productions;
+    	private Character startSymbol;
+
+ public CYKAlgorithm(){
+            
+     
+        nonTerminals = new ArrayList<>();
+        terminals = new ArrayList<>();
+        productions = new HashMap<>();
+        startSymbol = null;
+
+  }
 
     @Override
     /**
