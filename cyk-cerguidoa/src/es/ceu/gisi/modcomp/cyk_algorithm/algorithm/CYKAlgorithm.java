@@ -20,7 +20,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
 	private List<Character> nonTerminals;
     	private List<Character> terminals;
     	private Map<Character, List<String>> productions;
-    	private Character startSymbol;
+    	private char startSymbol;
 
  public CYKAlgorithm(){
             
@@ -28,7 +28,8 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
         nonTerminals = new ArrayList<>();
         terminals = new ArrayList<>();
         productions = new HashMap<>();
-        startSymbol = null;
+        startSymbol = '\0';
+
 
   }
 
@@ -77,8 +78,13 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * conjunto de elementos no terminales.
      */
     public void setStartSymbol(char nonterminal) throws CYKAlgorithmException {
-        throw new UnsupportedOperationException("Not supported yet.");
+         if (!nonTerminals.contains(nonterminal)) {
+            throw new CYKAlgorithmException();
+        }else{
+        startSymbol = nonterminal;
     }
+    }
+
 
     @Override
     /**
