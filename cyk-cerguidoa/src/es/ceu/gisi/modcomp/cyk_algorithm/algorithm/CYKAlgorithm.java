@@ -145,7 +145,10 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * dejando el algoritmo listo para volver a insertar una gramática nueva.
      */
     public void removeGrammar() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    	nonTerminals.clear();
+    	terminals.clear();
+    	productions.clear();
+    	startSymbol = '\0';
     }
 
     @Override
@@ -172,7 +175,15 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * elementos no terminales.
      */
     public String getGrammar() {
-        throw new UnsupportedOperationException("Not supported yet.");
+         StringBuilder grammar = new StringBuilder();
+
+    for (char nonTerminal : nonTerminals) {
+        if (productions.containsKey(nonTerminal)) {
+            grammar.append(nonTerminal).append(" -> ").append(productions.get(nonTerminal)).append("\n");
+        }
     }
 
+    return grammar.toString();
 }
+}
+
