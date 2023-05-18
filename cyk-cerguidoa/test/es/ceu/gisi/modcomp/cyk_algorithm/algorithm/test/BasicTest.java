@@ -484,4 +484,42 @@ public void Gramatica1NoPertenece() throws CYKAlgorithmException {
 
     assertFalse(cyk.isDerived("abba"));
 }
+@Test 
+public void Gramatica2Pertenece() throws CYKAlgorithmException {
+    CYKAlgorithm cyk = new CYKAlgorithm();
+    cyk.addNonTerminal('A');
+    cyk.addNonTerminal('B');
+    cyk.addNonTerminal('C');
+    cyk.addNonTerminal('D');
+    cyk.addTerminal('a');
+    cyk.addTerminal('b');
+    cyk.addTerminal('c');
+    cyk.setStartSymbol('A');
+    cyk.addProduction('A', "BC");
+    cyk.addProduction('A', "a");
+    cyk.addProduction('B', "CD");
+    cyk.addProduction('C', "BA");
+    cyk.addProduction('C', "b");
+    cyk.addProduction('D', "c");
+    assertTrue(cyk.isDerived("bcb"));
+}
+@Test
+public void Gramatica2NoPertenece() throws CYKAlgorithmException {
+    CYKAlgorithm cyk = new CYKAlgorithm();
+    cyk.addNonTerminal('A');
+    cyk.addNonTerminal('B');
+    cyk.addNonTerminal('C');
+    cyk.addNonTerminal('D');
+    cyk.addTerminal('a');
+    cyk.addTerminal('b');
+    cyk.addTerminal('c');
+    cyk.setStartSymbol('A');
+    cyk.addProduction('A', "BC");
+    cyk.addProduction('A', "a");
+    cyk.addProduction('B', "CD");
+    cyk.addProduction('C', "BA");
+    cyk.addProduction('C', "b");
+    cyk.addProduction('D', "c");
+    assertFalse(cyk.isDerived("ac"));
+}
 }
