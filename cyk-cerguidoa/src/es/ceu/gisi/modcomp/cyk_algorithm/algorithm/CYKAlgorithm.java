@@ -2,10 +2,13 @@ package es.ceu.gisi.modcomp.cyk_algorithm.algorithm;
 
 import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.exceptions.CYKAlgorithmException;
 import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.interfaces.CYKAlgorithmInterface;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 
@@ -17,12 +20,20 @@ import java.util.ArrayList;
  * @author Sergio Saugar García <sergio.saugargarcia@ceu.es>
  */
 public class CYKAlgorithm implements CYKAlgorithmInterface {
-	ArrayList<Character> nonTerminals = new ArrayList<Character>();
-    	ArrayList<Character> Terminals = new ArrayList<Character>();
-    	char startSymbol;
-    	Map<Character, Set<String>> productions = new HashMap<>();
+   /* private List<Character> nonTerminals;
+    private List<Character> terminals;
+    private Map<Character, String> productions;
+    private Character  startSymbol;
+    */
+   ArrayList<Character> nonTerminals = new ArrayList<Character>();
+    ArrayList<Character> Terminals = new ArrayList<Character>();
+    char startSymbol;
+    Map<Character, Set<String>> productions = new HashMap<>();
 
- 
+
+
+
+
 
     @Override
     /**
@@ -32,7 +43,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * @throws CYKAlgorithmException Si el elemento no es una letra mayúscula.
      */
     public void addNonTerminal(char nonterminal) throws CYKAlgorithmException {
-        if (!Character.isUpperCase(nonterminal)) {
+         if (!Character.isUpperCase(nonterminal)) {
             throw new CYKAlgorithmException();
         }
         if (nonTerminals.contains(nonterminal)) {
@@ -49,15 +60,16 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * @throws CYKAlgorithmException Si el elemento no es una letra minúscula.
      */
     public void addTerminal(char terminal) throws CYKAlgorithmException {
-       if (!Character.isLowerCase(terminal)) {
+         if (!Character.isLowerCase(terminal)) {
             throw new CYKAlgorithmException();
         }
-        if (terminals.contains(terminal)) {
+        if (Terminals.contains(terminal)) {
             throw new CYKAlgorithmException();
         }else{
-        terminals.add(terminal);
+        Terminals.add(terminal);
     }
     }
+
 
     @Override
     /**
@@ -69,14 +81,12 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * conjunto de elementos no terminales.
      */
     public void setStartSymbol(char nonterminal) throws CYKAlgorithmException {
-         if (!nonTerminals.contains(nonterminal)) {
-            throw new CYKAlgorithmException();
-        }else{
+       if (!nonTerminals.contains(nonterminal)) {
+        throw new CYKAlgorithmException();
+    } else {
         startSymbol = nonterminal;
     }
-    }
-
-
+}
     @Override
     /**
      * Método utilizado para construir la gramática. Admite producciones en FNC,
@@ -88,30 +98,47 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * compuesta por elementos (terminales o no terminales) no definidos
      * previamente.
      */
-    public void addProduction(char nonterminal, String production) throws CYKAlgorithmException {
-        
-	   if (!nonTerminals.contains(nonterminal)) {
-       		 throw new CYKAlgorithmException();
+    
+    
+   public void addProduction(char nonterminal, String production) throws CYKAlgorithmException {
+      if (!nonTerminals.contains(nonterminal)) {
+        throw new CYKAlgorithmException();
     }
-  	  if (production.length() == 2 && Character.isUpperCase(production.charAt(0)) && Character.isUpperCase(production.charAt(1)) && nonTerminals.contains(production.charAt(0)) && nonTerminals.contains(production.charAt(1)) && nonterminal != production.charAt(0)) {
+    if (production.length() == 2 && Character.isUpperCase(production.charAt(0)) && Character.isUpperCase(production.charAt(1)) && nonTerminals.contains(production.charAt(0)) && nonTerminals.contains(production.charAt(1)) && nonterminal != production.charAt(0)) {
         Set<String> nonterminalProductions = productions.getOrDefault(nonterminal, new HashSet<>());
         if (nonterminalProductions.contains(production)) {
-           	 throw new CYKAlgorithmException();
+            throw new CYKAlgorithmException();
         }
         nonterminalProductions.add(production);
         productions.put(nonterminal, nonterminalProductions);
     } else if (production.length() == 1 && Character.isLowerCase(production.charAt(0)) && Terminals.contains(production.charAt(0))) {
         Set<String> nonterminalProductions = productions.getOrDefault(nonterminal, new HashSet<>());
         if (nonterminalProductions.contains(production)) {
-            	throw new CYKAlgorithmException();
+            throw new CYKAlgorithmException();
         }
         nonterminalProductions.add(production);
         productions.put(nonterminal, nonterminalProductions);
     } else {
-        	throw new CYKAlgorithmException();
+        throw new CYKAlgorithmException();
     }
 }
 
+public Set<Character> getNonterminalsFromTerminal(char terminal) {
+    Set<Character> nonterminalsFromTerminal = new HashSet<>();
+    for (char nonterminal : nonTerminals) {
+        for (String production : productions.getOrDefault(nonterminal, Collections.emptySet())) {
+            if (production.length() == 1 && production.charAt(0) == terminal) {
+                nonterminalsFromTerminal.add(nonterminal);
+            }
+        }
+    }
+    return nonterminalsFromTerminal;
+}
+
+        
+
+    
+    
     @Override
     /**
      * Método que indica si una palabra pertenece al lenguaje generado por la
@@ -125,8 +152,8 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * conjunto de terminales definido para la gramática introducida, si la
      * gramática es vacía o si el autómata carece de axioma.
      */
-    public boolean isDerived(String word) throws CYKAlgorithmException {
-       int n = word.length();
+public boolean isDerived(String word) throws CYKAlgorithmException {
+    int n = word.length();
     if (n == 0) {
         throw new CYKAlgorithmException();
     }
@@ -171,6 +198,8 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
 
 
 
+
+
     @Override
     /**
      * Método que, para una palabra, devuelve un String que contiene todas las
@@ -187,8 +216,8 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * conjunto de terminales definido para la gramática introducida, si la
      * gramática es vacía o si el autómata carece de axioma.
      */
-    public String algorithmStateToString(String word) throws CYKAlgorithmException {
-        if (!isValidWord(word)) {
+public String algorithmStateToString(String word) throws CYKAlgorithmException {
+    if (!isValidWord(word)) {
         throw new CYKAlgorithmException("La palabra no es válida. Debe estar formada solo por elementos no terminales.");
     }
 
@@ -270,6 +299,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
     }
     return true;
 }
+            
 
     @Override
     /**
@@ -278,10 +308,10 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * dejando el algoritmo listo para volver a insertar una gramática nueva.
      */
     public void removeGrammar() {
-    	nonTerminals.clear();
-    	terminals.clear();
-    	productions.clear();
-    	startSymbol = '\0';
+    nonTerminals.clear();
+    Terminals.clear();
+    productions.clear();
+    startSymbol = '\0';
     }
 
     @Override
@@ -297,7 +327,7 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * salida podría ser: "S::=AB|BC".
      */
     public String getProductions(char nonterminal) {
-         return productions.entrySet().stream()
+            return productions.entrySet().stream()
             .filter(entry -> entry.getKey() == nonterminal)
             .findFirst()
             .map(entry -> {
@@ -317,6 +347,9 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
             .orElse("");
 }
 
+
+
+   
     @Override
     /**
      * Devuelve un String con la gramática completa.
@@ -324,16 +357,10 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * @return Devuelve el agregado de hacer getProductions sobre todos los
      * elementos no terminales.
      */
-    public String getGrammar() {
-         StringBuilder grammar = new StringBuilder();
-
-    for (char nonTerminal : nonTerminals) {
-        if (productions.containsKey(nonTerminal)) {
-            grammar.append(nonTerminal).append(" -> ").append(productions.get(nonTerminal)).append("\n");
-        }
-    }
-
-    return grammar.toString();
+public String getGrammar() {
+    StringBuilder devolver = new StringBuilder();
+    nonTerminals.forEach(nonterminal -> devolver.append(getProductions(nonterminal)).append("\n"));
+    return devolver.toString();
 }
 }
 
