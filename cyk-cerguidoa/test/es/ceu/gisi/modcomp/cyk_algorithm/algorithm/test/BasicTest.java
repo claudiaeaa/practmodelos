@@ -1,5 +1,4 @@
 package es.ceu.gisi.modcomp.cyk_algorithm.algorithm.test;
-
 import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.CYKAlgorithm;
 import es.ceu.gisi.modcomp.cyk_algorithm.algorithm.exceptions.CYKAlgorithmException;
 import java.io.FileNotFoundException;
@@ -21,6 +20,7 @@ import org.junit.rules.ExpectedException;
  * El código del alumno, no obstante, será comprobado con tests adicionales.
  *
  * @author Sergio Saugar García <sergio.saugargarcia@ceu.es>
+ * 
  */
 public class BasicTest {
 
@@ -96,13 +96,15 @@ public class BasicTest {
     }
 
     @Test
+    //mal
     public void comprobarEstablecerAxiomaNoValido1() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
         cyk = new CYKAlgorithm();
         cyk.setStartSymbol('S');
     }
 
-    @Test
+    @Test 
+    
     public void comprobarEstablecerAxiomaNoValido2() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
         cyk = new CYKAlgorithm();
@@ -112,6 +114,7 @@ public class BasicTest {
     }
 
     @Test
+    
     public void comprobarEstablecerAxiomaNoValido3() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
         cyk = new CYKAlgorithm();
@@ -121,6 +124,7 @@ public class BasicTest {
     }
 
     @Test
+    //mal
     public void comprobarAniadirProduccionValida() throws CYKAlgorithmException {
         cyk = new CYKAlgorithm();
         cyk.addTerminal('a');
@@ -131,6 +135,7 @@ public class BasicTest {
     }
 
     @Test
+    
     public void comprobarAniadirProduccionNoValida1() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
         cyk = new CYKAlgorithm();
@@ -143,6 +148,7 @@ public class BasicTest {
     }
 
     @Test
+    
     public void comprobarAniadirProduccionNoValida2() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
         cyk = new CYKAlgorithm();
@@ -155,6 +161,7 @@ public class BasicTest {
     }
 
     @Test
+    
     public void comprobarAniadirProduccionNoValida3() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
         cyk = new CYKAlgorithm();
@@ -166,6 +173,7 @@ public class BasicTest {
     }
 
     @Test
+    
     public void comprobarAniadirProduccionNoValida4() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
         cyk = new CYKAlgorithm();
@@ -178,6 +186,7 @@ public class BasicTest {
     }
 
     @Test
+    
     public void comprobarAniadirProduccionNoValida5() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
         cyk = new CYKAlgorithm();
@@ -189,6 +198,8 @@ public class BasicTest {
     }
 
     @Test
+    
+    
     public void comprobarAniadirProduccionNoValida6() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
         cyk = new CYKAlgorithm();
@@ -201,6 +212,7 @@ public class BasicTest {
     }
 
     @Test
+   
     public void comprobarAniadirProduccionNoValida7() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
         cyk = new CYKAlgorithm();
@@ -226,6 +238,7 @@ public class BasicTest {
     }
 
     @Test
+    //mal
     public void comprobarRecuperarProducciones() throws CYKAlgorithmException {
         cyk = new CYKAlgorithm();
         cyk.addNonTerminal('S');
@@ -258,6 +271,7 @@ public class BasicTest {
     }
 
     @Test
+    
     public void comprobarEliminarGramaticaValido() throws CYKAlgorithmException {
         cyk = new CYKAlgorithm();
         cyk.addNonTerminal('S');
@@ -299,6 +313,7 @@ public class BasicTest {
     }
 
     @Test
+    
     public void comprobarDerivacionNoValido1() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
 
@@ -330,6 +345,7 @@ public class BasicTest {
     }
 
     @Test
+    
     public void comprobarDerivacionNoValido2() throws CYKAlgorithmException {
         thrown.expect(CYKAlgorithmException.class);
 
@@ -361,6 +377,7 @@ public class BasicTest {
     }
 
     @Test
+    //mal
     public void comprobarDerivacionValido1() throws CYKAlgorithmException {
 
         cyk = new CYKAlgorithm();
@@ -391,6 +408,7 @@ public class BasicTest {
     }
 
     @Test
+    
     public void comprobarDerivacionValido2() throws CYKAlgorithmException {
 
         cyk = new CYKAlgorithm();
@@ -419,4 +437,51 @@ public class BasicTest {
 
         assertFalse(cyk.isDerived("bbb"));
     }
+    
+
+
+    @Test
+public void Gramatica1Pertenece() throws CYKAlgorithmException {
+    CYKAlgorithm cyk = new CYKAlgorithm();
+
+    cyk.addNonTerminal('A');
+    cyk.addNonTerminal('B');
+    cyk.addNonTerminal('C');
+
+    cyk.addTerminal('a');
+    cyk.addTerminal('b');
+
+    cyk.setStartSymbol('A');
+
+    cyk.addProduction('A', "BC");
+    cyk.addProduction('B', "CA");
+    cyk.addProduction('B', "a");
+    cyk.addProduction('C', "AB");
+    cyk.addProduction('C', "b");
+
+    assertTrue(cyk.isDerived("babb"));
+}
+
+
+@Test
+public void Gramatica1NoPertenece() throws CYKAlgorithmException {
+    CYKAlgorithm cyk = new CYKAlgorithm();
+
+    cyk.addNonTerminal('A');
+    cyk.addNonTerminal('B');
+    cyk.addNonTerminal('C');
+
+    cyk.addTerminal('a');
+    cyk.addTerminal('b');
+
+    cyk.setStartSymbol('A');
+
+    cyk.addProduction('A', "BC");
+    cyk.addProduction('B', "CA");
+    cyk.addProduction('B', "a");
+    cyk.addProduction('C', "AB");
+    cyk.addProduction('C', "b");
+
+    assertFalse(cyk.isDerived("abba"));
+}
 }
