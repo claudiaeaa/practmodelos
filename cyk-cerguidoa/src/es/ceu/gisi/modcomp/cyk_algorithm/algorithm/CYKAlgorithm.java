@@ -188,8 +188,88 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * gramática es vacía o si el autómata carece de axioma.
      */
     public String algorithmStateToString(String word) throws CYKAlgorithmException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!isValidWord(word)) {
+        throw new CYKAlgorithmException("La palabra no es válida. Debe estar formada solo por elementos no terminales.");
     }
+
+    int n = word.length();
+    String[][] table = new String[n][n];
+
+    // Inicializar la tabla con valores vacíos
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            table[i][j] = "";
+        }
+    }
+
+    // Calcular los valores de la tabla
+    for (int i = 0; i < n; i++) {
+        char nonTerminal = word.charAt(i);
+        StringBuilder derivedSymbols = new StringBuilder();
+
+        for (Map.Entry<Character, Set<String>> entry : productions.entrySet()) {
+            char symbol = entry.getKey();
+            Set<String> symbolProductions = entry.getValue();
+
+            for (String production : symbolProductions) {
+                if (production.equals(Character.toString(nonTerminal))) {
+                    derivedSymbols.append(symbol);
+                }
+            }
+        }
+
+        table[i][0] = derivedSymbols.toString();
+    }
+
+    for (int j = 1; j < n; j++) {
+        for (int i = 0; i < n - j; i++) {
+            StringBuilder derivedSymbols = new StringBuilder();
+
+            for (int k = 0; k < j; k++) {
+                String symbols1 = table[i][k];
+                String symbols2 = table[i + k + 1][j - k - 1];
+
+                for (int m = 0; m < symbols1.length(); m++) {
+                    char symbol1 = symbols1.charAt(m);
+
+                    for (int p = 0; p < symbols2.length(); p++) {
+                        char symbol2 = symbols2.charAt(p);
+
+                        Set<String> symbolProductions = productions.getOrDefault(symbol1, Collections.emptySet());
+                        for (String production : symbolProductions) {
+                            if (production.length() == 2 && production.charAt(0) == symbol1 && production.charAt(1) == symbol2) {
+                                derivedSymbols.append(symbolProductions);
+                            }
+                        }
+                    }
+                }
+            }
+
+            table[i][j] = derivedSymbols.toString();
+        }
+    }
+
+    // Construir el String de visualización de la tabla
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n - i; j++) {
+            result.append(String.format("(%d,%d): %s ", i, i + j, table[i][j]));
+        }
+        result.append("\n");
+    }
+
+    return result.toString();
+}
+
+   private boolean isValidWord(String word) {
+    for (int i = 0; i < word.length(); i++) {
+        char symbol = word.charAt(i);
+        if (!nonTerminals.contains(symbol)) {
+            return false;
+        }
+    }
+    return true;
+}
 
     @Override
     /**
