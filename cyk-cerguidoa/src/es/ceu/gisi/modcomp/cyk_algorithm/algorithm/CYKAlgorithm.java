@@ -126,8 +126,50 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * gramática es vacía o si el autómata carece de axioma.
      */
     public boolean isDerived(String word) throws CYKAlgorithmException {
-        throw new UnsupportedOperationException("Not supported yet.");
+       int n = word.length();
+    if (n == 0) {
+        throw new CYKAlgorithmException();
     }
+    if (nonTerminals.isEmpty() || startSymbol == '\u0000') {
+        throw new CYKAlgorithmException();
+    }
+
+    Set<Character>[][] table = new HashSet[n][n];
+
+    for (int i = 0; i < n; i++) {
+        char terminal = word.charAt(i);
+        if (!Terminals.contains(terminal)) {
+            throw new CYKAlgorithmException();
+        }
+        table[i][i] = getNonterminalsFromTerminal(terminal);
+    }
+
+    for (int l = 2; l <= n; l++) {
+        for (int i = 0; i <= n - l; i++) {
+            int j = i + l - 1;
+            table[i][j] = new HashSet<>();
+            for (int k = i; k < j; k++) {
+                Set<Character> nonterminalsA = table[i][k];
+                Set<Character> nonterminalsB = table[k + 1][j];
+                for (char nonterminal : nonTerminals) {
+                    for (String production : productions.getOrDefault(nonterminal, Collections.emptySet())) {
+                        if (production.length() == 2) {
+                            char symbolA = production.charAt(0);
+                            char symbolB = production.charAt(1);
+                            if (nonterminalsA.contains(symbolA) && nonterminalsB.contains(symbolB)) {
+                                table[i][j].add(nonterminal);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return table[0][n - 1].contains(startSymbol);
+}
+
+
 
     @Override
     /**
