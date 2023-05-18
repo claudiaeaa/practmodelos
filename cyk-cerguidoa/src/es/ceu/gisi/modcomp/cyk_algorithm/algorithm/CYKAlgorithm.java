@@ -17,21 +17,12 @@ import java.util.ArrayList;
  * @author Sergio Saugar García <sergio.saugargarcia@ceu.es>
  */
 public class CYKAlgorithm implements CYKAlgorithmInterface {
-	private List<Character> nonTerminals;
-    	private List<Character> terminals;
-    	private Map<Character, List<String>> productions;
-    	private char startSymbol;
+	ArrayList<Character> nonTerminals = new ArrayList<Character>();
+    	ArrayList<Character> Terminals = new ArrayList<Character>();
+    	char startSymbol;
+    	Map<Character, Set<String>> productions = new HashMap<>();
 
- public CYKAlgorithm(){
-            
-     
-        nonTerminals = new ArrayList<>();
-        terminals = new ArrayList<>();
-        productions = new HashMap<>();
-        startSymbol = '\0';
-
-
-  }
+ 
 
     @Override
     /**
@@ -98,8 +89,28 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * previamente.
      */
     public void addProduction(char nonterminal, String production) throws CYKAlgorithmException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+	   if (!nonTerminals.contains(nonterminal)) {
+       		 throw new CYKAlgorithmException();
     }
+  	  if (production.length() == 2 && Character.isUpperCase(production.charAt(0)) && Character.isUpperCase(production.charAt(1)) && nonTerminals.contains(production.charAt(0)) && nonTerminals.contains(production.charAt(1)) && nonterminal != production.charAt(0)) {
+        Set<String> nonterminalProductions = productions.getOrDefault(nonterminal, new HashSet<>());
+        if (nonterminalProductions.contains(production)) {
+           	 throw new CYKAlgorithmException();
+        }
+        nonterminalProductions.add(production);
+        productions.put(nonterminal, nonterminalProductions);
+    } else if (production.length() == 1 && Character.isLowerCase(production.charAt(0)) && Terminals.contains(production.charAt(0))) {
+        Set<String> nonterminalProductions = productions.getOrDefault(nonterminal, new HashSet<>());
+        if (nonterminalProductions.contains(production)) {
+            	throw new CYKAlgorithmException();
+        }
+        nonterminalProductions.add(production);
+        productions.put(nonterminal, nonterminalProductions);
+    } else {
+        	throw new CYKAlgorithmException();
+    }
+}
 
     @Override
     /**
@@ -164,8 +175,25 @@ public class CYKAlgorithm implements CYKAlgorithmInterface {
      * salida podría ser: "S::=AB|BC".
      */
     public String getProductions(char nonterminal) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+         return productions.entrySet().stream()
+            .filter(entry -> entry.getKey() == nonterminal)
+            .findFirst()
+            .map(entry -> {
+                StringBuilder productionsString = new StringBuilder();
+                Set<String> value = entry.getValue();
+                productionsString.append(entry.getKey()).append("::=");
+                List<String> sortedProductions = new ArrayList<>(value);
+                Collections.sort(sortedProductions);
+                for (int i = 0; i < sortedProductions.size(); i++) {
+                    if (i > 0) {
+                        productionsString.append("|");
+                    }
+                    productionsString.append(sortedProductions.get(i));
+                }
+                return productionsString.toString();
+            })
+            .orElse("");
+}
 
     @Override
     /**
