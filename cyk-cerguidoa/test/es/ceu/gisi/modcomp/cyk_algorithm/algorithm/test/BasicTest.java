@@ -546,7 +546,7 @@ public void Gramatica3Pertenece() throws CYKAlgorithmException {
     cyk.addProduction('C', "a");
     cyk.addProduction('D', "b");
     
-    assertTrue(cyk.isDerived("ab")); 
+    assertTrue(cyk.isDerived("aba")); 
 }
 @Test
 public void Gramatica3NoPertenece() throws CYKAlgorithmException {
